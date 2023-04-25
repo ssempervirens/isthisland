@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-shapefile = "0.4.0"
+shapefile = { version = "0.4.0", features = ["geo-types"] }
 geo = "0.24.1"
 geo-types = "0.7.9"
 anyhow = "1"
