@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 shapefile = "0.4.0"
+geo = "0.24.1"
 geo-types = "0.7.9"
 anyhow = "1"
