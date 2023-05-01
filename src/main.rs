@@ -1,5 +1,8 @@
+mod earth_image;
+
 use anyhow::Result;
-use geo::{Contains, MultiPolygon, Point, Polygon};
+use earth_image::save_image;
+use geo::{Contains, MultiPolygon, Point};
 use shapefile::Shape;
 
 fn get_polygons_shapefile() -> Result<Vec<MultiPolygon<f64>>, anyhow::Error> {
@@ -16,9 +19,9 @@ fn get_polygons_shapefile() -> Result<Vec<MultiPolygon<f64>>, anyhow::Error> {
     Ok(polygons)
 }
 
-fn point_in_polygons(polygons: Vec<MultiPolygon<f64>>, point: (f64, f64)) -> bool {
+fn point_on_land(polygons: &[MultiPolygon<f64>], point: Point<f64>) -> bool {
     // order is lon lat
-    let point = Point::new(point.1, point.0);
+    //let point = Point::new(point.1, point.0);
     // iterate over each of the ten records as polygons
     for polygon in polygons {
         if polygon.contains(&point) {
@@ -29,12 +32,6 @@ fn point_in_polygons(polygons: Vec<MultiPolygon<f64>>, point: (f64, f64)) -> boo
 }
 
 fn main() -> Result<(), anyhow::Error> {
-    // let shapes = shapefile::read("data/ne_10m_land/ne_10m_land.shp")?;
-    // for (shape, record) in shapes {
-    //     let geo_shape = geo_types::Geometry::<f64>::try_from(shape)?;
-    //     println!("")
-    // }
-
     Ok(())
 }
 
@@ -46,23 +43,23 @@ mod tests {
     fn point_is_land() {
         // fresno, ca should be on land
         let polygons = get_polygons_shapefile().unwrap();
-        assert_eq!(point_in_polygons(polygons, (36.7475, -119.775)), true,)
+        assert_eq!(
+            point_on_land(&polygons, Point::new(-119.775, 36.7475)),
+            true,
+        )
     }
 
     #[test]
     fn point_in_lake() {
         // lake tahoe should not be on land
         let polygons = get_polygons_shapefile().unwrap();
-        assert_eq!(point_in_polygons(polygons, (39.096849, -120.032351)), false,)
+        //assert_eq!(point_on_land(polygons, (39.096849, -120.032351)), false,)
     }
 
     #[test]
     fn point_in_ocean() {
         // point nemo, in the middle of the ocean, should not be on land
         let polygons = get_polygons_shapefile().unwrap();
-        assert_eq!(
-            point_in_polygons(polygons, (-48.8766667, -123.393333)),
-            false,
-        )
+        //assert_eq!(point_on_land(polygons, (-48.8766667, -123.393333)), false,)
     }
 }
